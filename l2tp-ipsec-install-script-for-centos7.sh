@@ -308,25 +308,25 @@ net.ipv4.conf.default.accept_redirects = 0
 EOF
 
 #允许防火墙端口
-cat >/usr/lib/firewalld/services/l2tpd.xml<<EOF
-<?xml version="1.0" encoding="utf-8"?>
-<service>
-  <short>l2tpd</short>
-  <description>L2TP IPSec</description>
-  <port protocol="udp" port="500"/>
-  <port protocol="udp" port="4500"/>
-  <port protocol="udp" port="1701"/>
-</service>
-EOF
+#cat >/usr/lib/firewalld/services/l2tpd.xml<<EOF
+#<?xml version="1.0" encoding="utf-8"?>
+#<service>
+#  <short>l2tpd</short>
+#  <description>L2TP IPSec</description>
+#  <port protocol="udp" port="500"/>
+#  <port protocol="udp" port="4500"/>
+#  <port protocol="udp" port="1701"/>
+#</service>
+#EOF
 
-firewall-cmd --permanent --add-service=l2tpd
-firewall-cmd --permanent --add-service=ipsec
-firewall-cmd --permanent --add-masquerade
-firewall-cmd --reload
-#iptables --table nat --append POSTROUTING --jump MASQUERADE
-#iptables -t nat -A POSTROUTING -s $iprange.0/24 -o $eth -j MASQUERADE
-#iptables -t nat -A POSTROUTING -s $iprange.0/24 -j SNAT --to-source $serverip
-#service iptables save
+#firewall-cmd --permanent --add-service=l2tpd
+#firewall-cmd --permanent --add-service=ipsec
+#firewall-cmd --permanent --add-masquerade
+#firewall-cmd --reload
+iptables --table nat --append POSTROUTING --jump MASQUERADE
+iptables -t nat -A POSTROUTING -s $iprange.0/24 -o $eth -j MASQUERADE
+iptables -t nat -A POSTROUTING -s $iprange.0/24 -j SNAT --to-source $serverip
+service iptables save
 
 #允许开机启动
 systemctl enable ipsec xl2tpd
